@@ -65,10 +65,11 @@ abstract class SlimController
     /**
      * Constructor for TodoQueue\Controller\Login
      *
-     * @param \Slim\Slim $app Ref to slim app
+     * @param \Slim\App $app Ref to slim app
      */
-    public function __construct(\Slim\Slim &$app)
+    public function __construct(\Slim\App &$app)
     {
+        #TODO aqui precisa ver como oter o container
         $this->app = $app;
         if ($renderTemplateSuffix = $app->config('controller.template_suffix')) {
             $this->renderTemplateSuffix = $renderTemplateSuffix;

@@ -17,7 +17,7 @@ namespace SlimController;
 /**
  * Extended Slim base
  */
-class Slim extends \Slim\Slim
+class App extends \Slim\App
 {
     /**
      * @var array
@@ -105,20 +105,16 @@ class Slim extends \Slim\Slim
                 if (!in_array($httpMethod, static::$ALLOWED_HTTP_METHODS)) {
                     throw new \InvalidArgumentException("Http method '$httpMethod' is not supported.");
                 }
+                
+                if ('any' === $httpMethod) {
+                    $httpMethod = static::$ALLOWED_HTTP_METHODS;
+                } else {
+                    $httpMethod = $httpMethod; //ahuaehuae
+                }
 
                 $routeMiddlewares = array_merge($localMiddlewares, $globalMiddlewares);
-                $route = $this->addControllerRoute($path, $classRoute, $routeMiddlewares);
+                $route = $this->addControllerRoute($path, $classRoute, $routeMiddlewares, $httpMethod);
 
-                if (!isset($this->routeNames[$classRoute])) {
-                    $route->name($classRoute);
-                    $this->routeNames[$classRoute] = 1;
-                }
-
-                if ('any' === $httpMethod) {
-                    call_user_func_array(array($route, 'via'), static::$ALLOWED_HTTP_METHODS);
-                } else {
-                    $route->via($httpMethod);
-                }
             }
         }
 
@@ -142,15 +138,20 @@ class Slim extends \Slim\Slim
      *
      * @return \Slim\Route
      */
-    public function addControllerRoute($path, $route, array $middleware = array())
+    public function addControllerRoute($path, $route, array $middleware = array(), $methods = "GET")
     {
         $callback = $this->buildCallbackFromControllerRoute($route);
 
         array_unshift($middleware, $path);
         array_push($middleware, $callback);
 
-        $route = call_user_func_array(array($this, 'map'), $middleware);
-
+        if (is_string($methods))
+            $this->$methods($path, $callback); 
+            
+        if (is_array($methods))
+            foreach ($methods as $method)
+                $this->$method($path, $callback); 
+        
         return $route;
     }
 
@@ -164,12 +165,15 @@ class Slim extends \Slim\Slim
     protected function buildCallbackFromControllerRoute($route)
     {
         list($controller, $methodName) = $this->determineClassAndMethod($route);
-        $app      = & $this;
+        $app      = $this;
         $callable = function () use ($app, $controller, $methodName) {
             // Get action arguments
             $args = func_get_args();
+
             // Try to fetch the instance from Slim's container, otherwise lazy-instantiate it
-            $instance = $app->container->has($controller) ? $app->container->get($controller) : new $controller($app);
+            $instance = $app->getContainer()->has($controller) 
+                    ? $app->getContainer()->get($controller) 
+                    : new $controller($app);
 
             return call_user_func_array(array($instance, $methodName), $args);
         };
@@ -215,4 +219,22 @@ class Slim extends \Slim\Slim
 
         return array($className, $methodName);
     }
+
+    /* Reimplement config method from slim Framework 2 */
+    function config($name, $value = null)
+    {
+        if (! is_null($value))
+            return $this->getContainer()->set($name, $value);
+        else
+            if ($this->getContainer()->has($name))
+                return $this->getContainer()->get($name);
+            else
+                return null;
+    }
+    
+    public function urlFor($a)
+    {
+        return $this->getContainer()->get("router")->pathFor($a);
+    }
+    
 }

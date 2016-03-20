@@ -1,4 +1,11 @@
-# SlimController
+# Slim3Controller
+
+This is a modification of SlimController from fortrabbit to work in slim framework 3. 
+See the original version for slim 2 in [https://github.com/fortrabbit/slimcontroller](https://github.com/fortrabbit/slimcontroller)
+
+TODO: 
+ - make tests pass
+ - put request, response and arguments in controller.
 
 SlimController is an extension for [the Slim Framework](http://www.slimframework.com/) providing the C of MVC.
 

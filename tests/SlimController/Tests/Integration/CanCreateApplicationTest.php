@@ -7,7 +7,7 @@ class CanCreateApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testCanCreateSimpleApplication()
     {
-        $app = new \SlimController\Slim();
+        $app = new \SlimController\App();
         $this->assertTrue(true); // if we got this far then creating the application worked
     }
 
