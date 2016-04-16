@@ -7,14 +7,11 @@ TODO:
  - make tests pass
  - put request, response and arguments in controller.
 
+* * *
+
 SlimController is an extension for [the Slim Framework](http://www.slimframework.com/) providing the C of MVC.
 
 With Slim alone, you can create great applications very, very quickly. Sometimes things get out of hand an you just need a bit more structure - or at least I do. That's what SlimController is for.
-
-[![Latest Stable Version](https://poser.pugx.org/slimcontroller/slimcontroller/v/stable.png)](https://packagist.org/packages/slimcontroller/slimcontroller)
-[![Total Downloads](https://poser.pugx.org/slimcontroller/slimcontroller/downloads.png)](https://packagist.org/packages/slimcontroller/slimcontroller)
-
-[![Build Status](https://travis-ci.org/fortrabbit/slimcontroller.png?branch=master)](https://travis-ci.org/fortrabbit/slimcontroller)
 
 # Install via composer
 
